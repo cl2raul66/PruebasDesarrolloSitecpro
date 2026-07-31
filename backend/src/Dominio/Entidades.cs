@@ -90,4 +90,10 @@ public class Solicitud
     public string? MotivoResolucion { get; set; }
 
     public string? MotivoCancelacion { get; set; }
+
+    public Categoria Categoria { get; set; } = null!;
+
+    public Usuario Solicitante { get; set; } = null!;
+
+    public Usuario? Agente { get; set; }
 }
