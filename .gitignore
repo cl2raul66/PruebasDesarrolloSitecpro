@@ -296,6 +296,11 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# SQLite (la base de datos se genera al arrancar con la migración y la semilla)
+*.db
+*.db-shm
+*.db-wal
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
