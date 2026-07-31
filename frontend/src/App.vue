@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { useRoute } from 'vue-router'
+import AppNav from './components/AppNav.vue'
+import ToastMessage from './components/ToastMessage.vue'
+
+const route = useRoute()
+const esLogin = (): boolean => route.name === 'login'
 </script>
 
 <template>
-  <HelloWorld />
+  <AppNav v-if="!esLogin()" />
+  <router-view />
+  <ToastMessage />
 </template>
