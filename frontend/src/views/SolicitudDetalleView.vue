@@ -10,6 +10,7 @@ import { useToastStore } from '../stores/toast'
 import { accionesPermitidas, puedeEditar } from '../utils/acciones'
 import { etiquetaEstado, etiquetaPrioridad, formatFecha } from '../utils/formato'
 import AccionModal from '../components/AccionModal.vue'
+import AppIcon from '../components/AppIcon.vue'
 
 const props = defineProps<{ id: string }>()
 
@@ -100,6 +101,10 @@ async function confirmarAccion(payload: { agenteId?: string; motivo?: string }):
   }
 }
 
+function regresar(): void {
+  void router.push({ name: 'solicitudes' })
+}
+
 function editar(): void {
   if (solicitud.value) {
     void router.push({ name: 'solicitud-editar', params: { id: solicitud.value.id } })
@@ -128,68 +133,19 @@ onMounted(() => {
     </div>
 
     <template v-else-if="solicitud">
-      <div class="pagina__cabecera">
+      <div class="pagina__cabecera detalle__cabecera">
         <div>
           <p class="detalle__codigo" data-testid="detalle-codigo">{{ solicitud.codigo }}</p>
           <h1 class="pagina__titulo" data-testid="detalle-titulo">{{ solicitud.titulo }}</h1>
         </div>
-        <div v-if="puedeEditarVisible()" class="detalle__acciones">
-          <button type="button" class="btn btn--primario" data-testid="btn-editar" @click="editar">
+        <div class="detalle__comandos">
+          <button type="button" class="btn btn--ghost" @click="regresar">
+            <AppIcon name="back" :size="16" />
+            Regresar
+          </button>
+          <button v-if="puedeEditarVisible()" type="button" class="btn btn--primario" data-testid="btn-editar" @click="editar">
+            <AppIcon name="edit" :size="16" />
             Editar
-          </button>
-          <button
-            v-if="accionesVisibles().includes('asignar')"
-            type="button"
-            class="btn btn--accion"
-            data-testid="btn-accion-asignar"
-            @click="abrirAccion('asignar')"
-          >
-            Asignar
-          </button>
-          <button
-            v-if="accionesVisibles().includes('iniciar')"
-            type="button"
-            class="btn btn--accion"
-            data-testid="btn-accion-iniciar"
-            @click="abrirAccion('iniciar')"
-          >
-            Iniciar
-          </button>
-          <button
-            v-if="accionesVisibles().includes('resolver')"
-            type="button"
-            class="btn btn--accion"
-            data-testid="btn-accion-resolver"
-            @click="abrirAccion('resolver')"
-          >
-            Resolver
-          </button>
-          <button
-            v-if="accionesVisibles().includes('cerrar')"
-            type="button"
-            class="btn btn--accion"
-            data-testid="btn-accion-cerrar"
-            @click="abrirAccion('cerrar')"
-          >
-            Cerrar
-          </button>
-          <button
-            v-if="accionesVisibles().includes('reabrir')"
-            type="button"
-            class="btn btn--accion"
-            data-testid="btn-accion-reabrir"
-            @click="abrirAccion('reabrir')"
-          >
-            Reabrir
-          </button>
-          <button
-            v-if="accionesVisibles().includes('cancelar')"
-            type="button"
-            class="btn btn--peligro"
-            data-testid="btn-accion-cancelar"
-            @click="abrirAccion('cancelar')"
-          >
-            Cancelar
           </button>
         </div>
       </div>
@@ -244,6 +200,69 @@ onMounted(() => {
         <p class="detalle__descripcion" data-testid="detalle-motivo">{{ motivoActual() }}</p>
       </section>
 
+      <div v-if="accionesVisibles().length > 0" class="grupo-acciones detalle__barra-acciones">
+        <span class="grupo-acciones__etiqueta">Acciones</span>
+        <button
+          v-if="accionesVisibles().includes('asignar')"
+          type="button"
+          class="btn btn--accion"
+          data-testid="btn-accion-asignar"
+          @click="abrirAccion('asignar')"
+        >
+          <AppIcon name="asignar" :size="16" />
+          Asignar
+        </button>
+        <button
+          v-if="accionesVisibles().includes('iniciar')"
+          type="button"
+          class="btn btn--accion"
+          data-testid="btn-accion-iniciar"
+          @click="abrirAccion('iniciar')"
+        >
+          <AppIcon name="iniciar" :size="16" />
+          Iniciar
+        </button>
+        <button
+          v-if="accionesVisibles().includes('resolver')"
+          type="button"
+          class="btn btn--accion"
+          data-testid="btn-accion-resolver"
+          @click="abrirAccion('resolver')"
+        >
+          <AppIcon name="resolver" :size="16" />
+          Resolver
+        </button>
+        <button
+          v-if="accionesVisibles().includes('cerrar')"
+          type="button"
+          class="btn btn--accion"
+          data-testid="btn-accion-cerrar"
+          @click="abrirAccion('cerrar')"
+        >
+          <AppIcon name="cerrar" :size="16" />
+          Cerrar
+        </button>
+        <button
+          v-if="accionesVisibles().includes('reabrir')"
+          type="button"
+          class="btn btn--accion"
+          data-testid="btn-accion-reabrir"
+          @click="abrirAccion('reabrir')"
+        >
+          <AppIcon name="reabrir" :size="16" />
+          Reabrir
+        </button>
+        <button
+          v-if="accionesVisibles().includes('cancelar')"
+          type="button"
+          class="btn btn--peligro"
+          data-testid="btn-accion-cancelar"
+          @click="abrirAccion('cancelar')"
+        >
+          <AppIcon name="cancelar" :size="16" />
+          Cancelar
+        </button>
+      </div>
       <AccionModal
         :accion="accionActiva"
         :agentes="agentes"
@@ -264,11 +283,22 @@ onMounted(() => {
   color: var(--text);
 }
 
-.detalle__acciones {
+.detalle__cabecera {
+  align-items: flex-start;
+}
+
+.detalle__comandos {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   justify-content: flex-end;
+}
+
+.detalle__barra-acciones {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  box-sizing: border-box;
 }
 
 .detalle__grid {

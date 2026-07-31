@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { EstadoSolicitud, Prioridad } from '../types'
 import { useSolicitudesStore } from '../stores/solicitudes'
 import { etiquetaEstado, etiquetaPrioridad, formatFecha } from '../utils/formato'
+import AppIcon from '../components/AppIcon.vue'
 
 const router = useRouter()
 const store = useSolicitudesStore()
@@ -11,7 +12,15 @@ const store = useSolicitudesStore()
 const estados: EstadoSolicitud[] = ['Nueva', 'Asignada', 'EnProceso', 'Resuelta', 'Cerrada', 'Cancelada']
 const prioridades: Prioridad[] = ['Baja', 'Media', 'Alta', 'Critica']
 
+const filtrosRef = ref<HTMLElement | null>(null)
+let observador: ResizeObserver | null = null
 let temporizadorBusqueda: ReturnType<typeof setTimeout> | null = null
+
+function sincronizarAlturaFiltros(): void {
+  if (filtrosRef.value) {
+    document.documentElement.style.setProperty('--altura-filtros', `${filtrosRef.value.offsetHeight}px`)
+  }
+}
 
 function irANueva(): void {
   void router.push({ name: 'solicitud-nueva' })
@@ -40,10 +49,19 @@ function textoPagina(): string {
 }
 
 onMounted(() => {
+  sincronizarAlturaFiltros()
+  if (filtrosRef.value) {
+    observador = new ResizeObserver(sincronizarAlturaFiltros)
+    observador.observe(filtrosRef.value)
+  }
   void store.cargarCategorias().catch(() => {
     store.error = 'No se pudieron cargar las categorías.'
   })
   void store.cargarListado()
+})
+
+onBeforeUnmount(() => {
+  observador?.disconnect()
 })
 </script>
 
@@ -52,11 +70,12 @@ onMounted(() => {
     <div class="pagina__cabecera">
       <h1 class="pagina__titulo">Solicitudes</h1>
       <button type="button" class="btn btn--primario" data-testid="btn-nueva-solicitud" @click="irANueva">
-        + Nueva solicitud
+        <AppIcon name="plus" :size="16" />
+        Nueva solicitud
       </button>
     </div>
 
-    <section class="filtros" aria-label="Filtros">
+    <section ref="filtrosRef" class="filtros" aria-label="Filtros">
       <div class="campo">
         <label class="campo__etiqueta" for="filtro-estado">Estado</label>
         <select
@@ -238,6 +257,9 @@ onMounted(() => {
 }
 
 .filtros {
+  position: sticky;
+  top: var(--altura-nav, 0px);
+  z-index: 40;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
@@ -246,6 +268,8 @@ onMounted(() => {
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 10px;
+  background: var(--bg-suave);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .filtros__limpiar {
@@ -254,7 +278,7 @@ onMounted(() => {
 }
 
 .tabla-envoltorio {
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .tabla {
@@ -271,10 +295,14 @@ onMounted(() => {
 }
 
 .tabla th {
+  position: sticky;
+  top: calc(var(--altura-nav, 0px) + var(--altura-filtros, 0px));
+  z-index: 30;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text);
+  background: var(--bg);
 }
 
 .tabla__fila {
@@ -291,11 +319,17 @@ onMounted(() => {
 }
 
 .paginacion {
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
   margin-top: 20px;
+  padding: 10px 0 0;
+  background: var(--bg-suave);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .paginacion__info {

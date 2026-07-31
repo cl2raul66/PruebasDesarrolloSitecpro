@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import type { Categoria, Prioridad, SolicitudDetalle, SolicitudRequest } from '../types'
+import AppIcon from './AppIcon.vue'
 
 const props = defineProps<{
   modo: 'crear' | 'editar'
@@ -135,9 +136,11 @@ function cancelar(): void {
 
     <div class="form__acciones">
       <button type="button" class="btn btn--secundario" data-testid="form-cancelar" @click="cancelar">
-        Cancelar
+        <AppIcon name="back" :size="16" />
+        Regresar
       </button>
       <button type="submit" class="btn btn--primario" data-testid="form-submit" :disabled="enviando">
+        <AppIcon name="check" :size="16" />
         {{ enviando ? 'Guardando…' : modo === 'crear' ? 'Crear solicitud' : 'Guardar cambios' }}
       </button>
     </div>
@@ -150,6 +153,7 @@ function cancelar(): void {
   flex-direction: column;
   gap: 16px;
   max-width: 560px;
+  margin: 0 auto;
 }
 
 .form__acciones {

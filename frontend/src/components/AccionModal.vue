@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { AccionTransicion, UsuarioResumen } from '../types'
+import AppIcon from './AppIcon.vue'
 
 const props = defineProps<{
   accion: AccionTransicion | null
@@ -118,6 +119,7 @@ function cerrar(): void {
 
       <div class="modal__acciones">
         <button type="button" class="btn btn--secundario" data-testid="modal-cancelar" @click="cerrar">
+          <AppIcon name="x" :size="16" />
           Cancelar
         </button>
         <button
@@ -127,6 +129,7 @@ function cerrar(): void {
           :disabled="!puedeConfirmar"
           @click="confirmar"
         >
+          <AppIcon name="check" :size="16" />
           {{ cargando ? 'Guardando…' : 'Confirmar' }}
         </button>
       </div>

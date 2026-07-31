@@ -85,6 +85,11 @@ h3 {
   cursor: not-allowed;
 }
 
+.btn .icono {
+  flex-shrink: 0;
+}
+
+/* Botones de comando: sólidos, son la acción principal o de navegación */
 .btn--primario {
   background: var(--accent);
   color: #fff;
@@ -104,22 +109,57 @@ h3 {
   background: var(--bg-suave);
 }
 
-.btn--accion {
+.btn--ghost {
+  background: transparent;
+  color: var(--text-h);
+}
+
+.btn--ghost:hover:not(:disabled) {
   background: var(--accent-bg);
   color: var(--accent);
 }
 
+/* Botones de acción del flujo: chips delineados, separados de los comandos */
+.btn--accion {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .btn--accion:hover:not(:disabled) {
-  background: rgba(37, 99, 235, 0.15);
+  background: var(--accent-bg);
 }
 
 .btn--peligro {
-  background: var(--peligro);
-  color: #fff;
+  background: transparent;
+  color: var(--peligro);
+  border-color: var(--peligro);
 }
 
 .btn--peligro:hover:not(:disabled) {
-  background: var(--peligro-hover);
+  background: rgba(220, 38, 38, 0.08);
+}
+
+/* Contenedor que agrupa las acciones de flujo y las separa de los comandos */
+.grupo-acciones {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-suave);
+}
+
+.grupo-acciones__etiqueta {
+  padding-right: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
 }
 
 /* Campos de formulario */
